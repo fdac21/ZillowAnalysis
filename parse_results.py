@@ -5,14 +5,16 @@ import pprint
 import os
 import collections
 
-#NEW: Flatten a nested dictionary
+#Function to flatten a nested dictionary
 def flatten(d, parent_key='', sep='_'):
     items = []
     for k, v in d.items():
+        #new_key = parent_key + sep + k if parent_key else k #original
+        new_key = k #this is better for this application
         if isinstance(v, collections.MutableMapping):
-            items.extend(flatten(v, k, sep=sep).items())
+            items.extend(flatten(v, new_key, sep=sep).items())
         else:
-            items.append((k, v))
+            items.append((new_key, v))
     return dict(items)
 
 #***************************#
@@ -58,14 +60,15 @@ type(all_listings['cat1']['searchResults']['listResults'])
 len(all_listings['cat1']['searchResults']['listResults'])
 all_listings = all_listings['cat1']['searchResults']['listResults']
 
-#Each listing is a nested list. Flatten the list before inserting into database:
-flatten(all_listings[0], parent_key=False)
+#Flatten dictionary
+all_listings[0] = flatten(all_listings[0], parent_key=False)
 
 # There are 40 results per page. We'll need a way to detect the number of pages so we can cycle through them all.
 # NEXT STEPS:
-# Make sure we have all the variables we could possibly want to collect
-# Loop through all results from a single page and add variables to dataframe / database
-# Loop through all the results pages
+#Remove redundant variables from each home listing (beds, baths, zpid, etc.)
+#Add more variables (datetime posted, listing by agent or owner, for sale or for rent, etc.)
+    #We'll want to compare with a listing that's for sale by owner (these are for sale by agent by default)
+    #Also compare with a rental listing
 
 #***************************#
 #  Individual Listing Page  #
