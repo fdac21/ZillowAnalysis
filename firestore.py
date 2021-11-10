@@ -29,10 +29,21 @@ We may want to prioritize more local zip codes first.
 #        Input Data         #
 #***************************#
 for i in range(len(all_listings)):
-	doc_ref = db.collection('listings').document(all_listings[i]['id']) #Set the listing id as the document name
-	doc_ref.set( all_listings[i] )
+	db.collection('zipcodes').add(row.to_dict(), row['Zipcode'])
+	
 """
 This creates a new entry in the 'listings' collection that uses zillow's id number as the identifier of the listing.
-If the entry exists, it will be overwritten with the new data.
+If the entry exists, it will throw an error.
 'all_listings' is a list of dictionaries, each entry of the list corresponding to a listing from the search results.
+
+CAUTION: DO NOT USE THIS METHOD:
+
+for i in range(len(all_listings)):
+	doc_ref = db.collection('listings').document(all_listings[i]['id']) 
+	doc_ref.set( all_listings[i] )
+
+This was the original method for inputting data into the database, but every time you run
+db.collection('listings').document(all_listings[i]['id']), it creates a read for EVERY
+document in the database. This makes our number of reads skyrocket and we can easily
+go over our limit. Use the .add() method instead.
 """
