@@ -13,6 +13,8 @@ from tqdm.auto import tqdm
 import firebase_admin
 from firebase_admin import credentials, firestore
 
+from zillow_requests import zequests
+
 
 cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
@@ -170,7 +172,7 @@ class Parser:
 
         for page in pages:
             try:
-                resp = requests.get(f"{search_url}{page}_p/", headers=headers)
+                resp = zequests(f"{search_url}{page}_p/", headers=headers)
                 soup = BeautifulSoup(resp.content, "html.parser")
                 if listings := soup.find(
                     "script",
