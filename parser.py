@@ -247,7 +247,7 @@ if __name__ == "__main__":
         results = parser.getListingDataSP(z, st)
         total_saved += len(results)
     print(bcolors.OKGREEN + f'Saved {total_saved} listings from {len(zip_codes)} zipcodes to 🔥 Firestore' + bcolors.ENDC)
-    print(bcolors.WARNING + f'Next zipcode to read {next_to_do["Zipcode"]}' + bcolors.ENDC)
+    print(bcolors.WARNING + 'Next zipcode to read: ' + bcolors.BOLD + next_to_do["Zipcode"] + bcolors.ENDC)
     # Loads First page of Search Results for Knoxville, TN
     # parser.getListingDataSP("37916", "TN")
 
