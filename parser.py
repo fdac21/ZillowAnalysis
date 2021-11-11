@@ -9,9 +9,12 @@ import time
 from os import _exit
 from os.path import exists
 from tqdm.auto import tqdm
+from re import match
 
 import firebase_admin
 from firebase_admin import credentials, firestore
+
+from zillow_requests import zequests
 
 
 cred = credentials.Certificate("serviceAccountKey.json")
@@ -170,7 +173,7 @@ class Parser:
 
         for page in pages:
             try:
-                resp = requests.get(f"{search_url}{page}_p/", headers=headers)
+                resp = zequests(f"{search_url}{page}_p/", headers=headers)
                 soup = BeautifulSoup(resp.content, "html.parser")
                 if listings := soup.find(
                     "script",
@@ -203,6 +206,10 @@ class Parser:
                 all_addresses.add(listing['addressStreet'])
                 these_listings.append(listing)
 
+        is_zipcode = match(r'.*(\d{5}(\-\d{4})?)$', c_or_z)
+        if is_zipcode:
+            db.collection('zipcodes').document(c_or_z).update({'Scraped': True})
+
         self.parse_cache[region] = -1
 
         return these_listings
@@ -210,7 +217,7 @@ class Parser:
     def getZipCodes(self, start: str, amount: int = 50) -> List[str]:
         try:
             db_ref = db.collection('zipcodes').document(start)
-            return [z.to_dict() for z in db.collection('zipcodes').start_at(db_ref.get()).limit(amount).get()]
+            return [z.to_dict() for z in db.collection('zipcodes').start_at(db_ref.get()).limit(amount).get() if not z.to_dict()['Scraped']]
         except:
             print(bcolors.FAIL + f'Zipcode for {start} not in DB' + bcolors.ENDC)
             return []
