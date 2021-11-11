@@ -217,7 +217,7 @@ class Parser:
     def getZipCodes(self, start: str, amount: int = 50) -> List[str]:
         try:
             db_ref = db.collection('zipcodes').document(start)
-            return [z.to_dict() for z in db.collection('zipcodes').start_at(db_ref.get()).limit(amount).get() if not z.to_dict()['Scraped']]
+            return [z.to_dict() for z in db.collection('zipcodes').start_at(db_ref.get()).limit(amount+1).get() if not z.to_dict()['Scraped']]
         except:
             print(bcolors.FAIL + f'Zipcode for {start} not in DB' + bcolors.ENDC)
             return []
@@ -237,6 +237,8 @@ if __name__ == "__main__":
     count = input(bcolors.OKBLUE + 'Amount of ZipCodes to Parse: ' + bcolors.ENDC)
 
     zip_codes = parser.getZipCodes(starting_zip, int(count))
+    next_to_do = zip_codes[-1]
+    zip_codes = zip_codes[:-1]
     total_saved = 0
 
     for zip_code in zip_codes:
@@ -245,6 +247,7 @@ if __name__ == "__main__":
         results = parser.getListingDataSP(z, st)
         total_saved += len(results)
     print(bcolors.OKGREEN + f'Saved {total_saved} listings from {len(zip_codes)} zipcodes to 🔥 Firestore' + bcolors.ENDC)
+    print(bcolors.WARNING + f'Next zipcode to read {next_to_do["Zipcode"]}' + bcolors.ENDC)
     # Loads First page of Search Results for Knoxville, TN
     # parser.getListingDataSP("37916", "TN")
 
