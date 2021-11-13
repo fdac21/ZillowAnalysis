@@ -221,6 +221,7 @@ class Parser:
             if not codes:
                 print(bcolors.FAIL + 'No zipcodes here' + bcolors.ENDC)
                 _exit(1)
+            return codes
         except:
             print(bcolors.FAIL + f'Zipcode for {start} not in DB' + bcolors.ENDC)
             _exit(1)
@@ -240,7 +241,6 @@ if __name__ == "__main__":
     count = input(bcolors.OKBLUE + 'Amount of ZipCodes to Parse: ' + bcolors.ENDC)
 
     zip_codes = parser.getZipCodes(starting_zip, int(count))
-    print(zip_codes)
     next_to_do = zip_codes[-1]
     zip_codes = zip_codes[:-1]
     total_saved = 0
