@@ -223,7 +223,7 @@ class Parser:
             return []
 
     def saveListing(self, listing: Dict) -> bool:
-        db.collection('listings').document(listing['zpid']).set(listing)
+        db.collection('listings').add(listing, listing['zpid'])
         return True
 
 
