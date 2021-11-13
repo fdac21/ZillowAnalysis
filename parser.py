@@ -198,7 +198,7 @@ class Parser:
                 self.parse_cache[region] = page
                 with open('parse_cache.json', 'w') as cache:
                     cache.write(json.dumps(self.parse_cache))
-                    _exit(1)
+                _exit(1)
 
         for listing in tqdm(all_listings, desc=f'{c_or_z}'):
             if listing['addressStreet'] not in all_addresses:
