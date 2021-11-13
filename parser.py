@@ -217,7 +217,10 @@ class Parser:
     def getZipCodes(self, start: str, amount: int = 50) -> List[str]:
         try:
             db_ref = db.collection('zipcodes').document(start)
-            return [z.to_dict() for z in db.collection('zipcodes').start_at(db_ref.get()).limit(amount+1).get() if not z.to_dict()['Scraped']]
+            codes = [z.to_dict() for z in db.collection('zipcodes').start_at(db_ref.get()).limit(amount+1).get() if not z.to_dict()['Scraped']]
+            if not codes:
+                print(bcolors.FAIL + 'No zipcodes here' + bcolors.ENDC)
+                _exit(1)
         except:
             print(bcolors.FAIL + f'Zipcode for {start} not in DB' + bcolors.ENDC)
             _exit(1)
@@ -237,6 +240,7 @@ if __name__ == "__main__":
     count = input(bcolors.OKBLUE + 'Amount of ZipCodes to Parse: ' + bcolors.ENDC)
 
     zip_codes = parser.getZipCodes(starting_zip, int(count))
+    print(zip_codes)
     next_to_do = zip_codes[-1]
     zip_codes = zip_codes[:-1]
     total_saved = 0
