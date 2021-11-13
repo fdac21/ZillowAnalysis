@@ -220,7 +220,7 @@ class Parser:
             return [z.to_dict() for z in db.collection('zipcodes').start_at(db_ref.get()).limit(amount+1).get() if not z.to_dict()['Scraped']]
         except:
             print(bcolors.FAIL + f'Zipcode for {start} not in DB' + bcolors.ENDC)
-            return []
+            _exit(1)
 
     def saveListing(self, listing: Dict) -> bool:
         db.collection('listings').add(listing, listing['zpid'])
