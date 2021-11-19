@@ -9,7 +9,7 @@ This project is to retrieve data from Zillow and analyze trends in the housing m
 + (Maybe) transfer firebase data across accounts [Matt]
 
 
-## Master Function Pseudocode
+## Main Function Pseudocode
 
 1. Get zip code from Firestore that has not yet been scraped (see 'firestore.py')
 2. Get random user-agent for heading (headers.py)
